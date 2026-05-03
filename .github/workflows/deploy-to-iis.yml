@@ -7,12 +7,11 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: [self-hosted, windows]
+    runs-on: self-hosted
 
     env:
       IIS_SITE_PATH: 'C:\inetpub\wwwroot\MyApp'
       APP_POOL: 'MyAppPool'
-      PUBLISH_PATH: '${{ github.workspace }}\publish'
 
     steps:
       - name: Checkout repository
@@ -27,23 +26,19 @@ jobs:
         run: dotnet restore
 
       - name: Build and publish app
-        run: dotnet publish -c Release -o $env:PUBLISH_PATH
+        run: dotnet publish -c Release -o publish
 
-      - name: Stop IIS App Pool (safe deploy)
+      - name: Stop IIS App Pool
         shell: powershell
         run: |
           Import-Module WebAdministration
           Stop-WebAppPool -Name "${{ env.APP_POOL }}"
 
-      - name: Clean IIS folder
-        shell: powershell
-        run: |
-          Remove-Item "${{ env.IIS_SITE_PATH }}\*" -Recurse -Force -ErrorAction SilentlyContinue
-
       - name: Deploy files to IIS
         shell: powershell
         run: |
-          Copy-Item "$env:PUBLISH_PATH\*" "${{ env.IIS_SITE_PATH }}" -Recurse -Force
+          Remove-Item "${{ env.IIS_SITE_PATH }}\*" -Recurse -Force -ErrorAction SilentlyContinue
+          Copy-Item ".\publish\*" "${{ env.IIS_SITE_PATH }}" -Recurse -Force
 
       - name: Start IIS App Pool
         shell: powershell
@@ -51,6 +46,6 @@ jobs:
           Import-Module WebAdministration
           Start-WebAppPool -Name "${{ env.APP_POOL }}"
 
-      - name: Restart IIS (fallback safety)
+      - name: Restart IIS (fallback)
         if: failure()
         run: iisreset
