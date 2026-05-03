@@ -1,4 +1,4 @@
-name: Deploy to IIS
+name: Deploy HTML to IIS
 
 on:
   push:
@@ -13,14 +13,9 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Stop IIS
-        run: iisreset /stop
-
-      - name: Deploy using Robocopy
-        run: robocopy . C:\inetpub\wwwroot /MIR
-
-      - name: Start IIS
-        run: iisreset /start
+      - name: Deploy index.html to IIS
+        run: |
+          copy /Y index.html C:\inetpub\wwwroot\index.html
 
       - name: Done
-        run: echo "Deployment completed"
+        run: echo "HTML deployed to IIS successfully"
