@@ -5,17 +5,22 @@ on:
     branches:
       - main
 
+  schedule:
+    - cron: '50 10 * * *'   # 4:20 PM IST
+
+  workflow_dispatch:   # optional manual trigger
+
 jobs:
   deploy:
     runs-on: [self-hosted, Windows, X64]
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Deploy index.html to IIS
         run: |
           Copy-Item -Path "index.html" -Destination "C:\inetpub\wwwroot\index.html" -Force
 
       - name: Done
-        run: echo "Deployment successful"
+        run: echo "Deployment successful"s
