@@ -1,14 +1,10 @@
 name: Deploy HTML to IIS
 
 on:
-  push:
-    branches:
-      - main
-
   schedule:
-  - cron: '* * * * *'
+    - cron: '* * * * *'   # 4:20 PM IST
 
-  workflow_dispatch:   # optional manual trigger
+  workflow_dispatch:   # optional (manual run button)
 
 jobs:
   deploy:
@@ -23,4 +19,4 @@ jobs:
           Copy-Item -Path "index.html" -Destination "C:\inetpub\wwwroot\index.html" -Force
 
       - name: Done
-        run: echo "Deployment successful"s
+        run: echo "Deployment successful"
