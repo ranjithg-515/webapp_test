@@ -1,51 +1,5 @@
-name: Build and Deploy to IIS
-
-on:
-  push:
-    branches:
-      - main
-
 jobs:
-  build-and-deploy:
-    runs-on: self-hosted
-
-    env:
-      IIS_SITE_PATH: 'C:\inetpub\wwwroot\MyApp'
-      APP_POOL: 'MyAppPool'
-
+  test-runner:
+    runs-on: [self-hosted, Windows, X64]
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.0.x'
-
-      - name: Restore dependencies
-        run: dotnet restore
-
-      - name: Build and publish app
-        run: dotnet publish -c Release -o publish
-
-      - name: Stop IIS App Pool
-        shell: powershell
-        run: |
-          Import-Module WebAdministration
-          Stop-WebAppPool -Name "${{ env.APP_POOL }}"
-
-      - name: Deploy files to IIS
-        shell: powershell
-        run: |
-          Remove-Item "${{ env.IIS_SITE_PATH }}\*" -Recurse -Force -ErrorAction SilentlyContinue
-          Copy-Item ".\publish\*" "${{ env.IIS_SITE_PATH }}" -Recurse -Force
-
-      - name: Start IIS App Pool
-        shell: powershell
-        run: |
-          Import-Module WebAdministration
-          Start-WebAppPool -Name "${{ env.APP_POOL }}"
-
-      - name: Restart IIS (fallback)
-        if: failure()
-        run: iisreset
+      - run: echo "Runner is working"
