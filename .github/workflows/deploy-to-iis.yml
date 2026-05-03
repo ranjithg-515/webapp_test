@@ -6,7 +6,7 @@ on:
       - main
 
   schedule:
-    - cron: '50 10 * * *'   # 4:20 PM IST
+    - cron: '*/5 * * * *'
 
   workflow_dispatch:   # optional manual trigger
 
