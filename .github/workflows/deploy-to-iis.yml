@@ -1,7 +1,20 @@
+name: Deploy HTML to IIS
+
+on:
+  push:
+    branches:
+      - main
+
 jobs:
   deploy:
     runs-on: [self-hosted, Windows, X64]
 
     steps:
-      - uses: actions/checkout@v3
-      - run: copy /Y index.html C:\inetpub\wwwroot\index.html
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Deploy index.html to IIS
+        run: copy /Y index.html C:\inetpub\wwwroot\index.html
+
+      - name: Done
+        run: echo "Deployment successful"
