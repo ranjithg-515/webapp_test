@@ -1,4 +1,4 @@
-name: Test Runner
+name: Deploy to IIS
 
 on:
   push:
@@ -6,7 +6,21 @@ on:
       - main
 
 jobs:
-  test-runner:
-    runs-on: [self-hosted, Windows, X64]
+  deploy:
+    runs-on: win-runner-1
+
     steps:
-      - run: echo "Runner is working"
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Stop IIS
+        run: iisreset /stop
+
+      - name: Deploy using Robocopy
+        run: robocopy . C:\inetpub\wwwroot /MIR
+
+      - name: Start IIS
+        run: iisreset /start
+
+      - name: Done
+        run: echo "Deployment completed"
