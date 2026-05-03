@@ -14,7 +14,8 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Deploy index.html to IIS
-        run: copy /Y index.html C:\inetpub\wwwroot\index.html
+        run: |
+          Copy-Item -Path "index.html" -Destination "C:\inetpub\wwwroot\index.html" -Force
 
       - name: Done
         run: echo "Deployment successful"
